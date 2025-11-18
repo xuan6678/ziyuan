@@ -2,258 +2,64 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>次元资源</title>
+    <title>分类封面展示页</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Roboto, sans-serif; background: #f5f7fa; color: #333; }
-        .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
-        /* 公告栏 */
-        .notice { background: #e8f4f8; border-radius: 8px; padding: 15px; margin-bottom: 20px; text-align: center; color: #2d3748; }
-        /* 密码验证弹窗 */
-        .verify-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 100; }
-        .verify-box { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 400px; box-shadow: 0 5px 20px rgba(0,0,0,0.15); }
-        .verify-box h3 { margin-bottom: 25px; text-align: center; font-size: 18px; color: #2d3748; }
-        .verify-form-group { margin-bottom: 20px; }
-        .verify-input { width: 100%; padding: 14px; border: 1px solid #e0e0e0; border-radius: 8px; outline: none; font-size: 16px; }
-        .verify-input:focus { border-color: #4299e1; }
-        .verify-btn-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; }
-        .verify-btn, .group-btn {
-            padding: 14px;
-            background: #4299e1;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 16px;
-            transition: background 0.3s;
-            text-align: center;
-            text-decoration: none;
-        }
-        .verify-btn:hover, .group-btn:hover { background: #3182ce; }
-        .verify-error { color: #f56565; text-align: center; margin-top: 10px; display: none; font-size: 14px; }
-        .verify-count { text-align: center; margin-top: 10px; color: #666; font-size: 14px; }
-        /* 帖子内容弹窗（按钮对齐布局） */
-        .content-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 100; }
-        .content-box { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto; box-shadow: 0 5px 20px rgba(0,0,0,0.15); }
-        .content-box h3 { margin-bottom: 15px; text-align: center; font-size: 20px; }
-        .content-cover-large { width: 100%; height: 300px; background: #f0f0f0; background-size: cover; background-position: center; margin-bottom: 15px; border-radius: 8px; }
-        .content-desc { line-height: 1.6; margin-bottom: 20px; font-size: 16px; color: #4a5568; }
-        /* 内容弹窗按钮组（对齐用） */
-        .content-btn-group {
-            display: flex;
-            justify-content: center;
-            gap: 15px; /* 按钮间距 */
-            flex-wrap: wrap; /* 小屏幕自动换行 */
-        }
-        .content-link-btn, .close-btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 16px;
-            cursor: pointer;
-            text-decoration: none;
-            text-align: center;
-        }
-        .content-link-btn {
-            background: #4299e1;
-            color: white;
-        }
-        .close-btn {
-            background: #f56565;
-            color: white;
-        }
-        /* 头部 */
-        .header { display: flex; flex-wrap: wrap; align-items: center; gap: 15px; margin-bottom: 25px; }
-        .header h1 { flex: 1; min-width: 200px; color: #2d3748; font-size: 24px; }
-        .search-box { flex: 2; min-width: 250px; position: relative; }
-        .search-input { width: 100%; padding: 14px 15px 14px 40px; border: 1px solid #e0e0e0; border-radius: 8px; outline: none; font-size: 16px; }
-        .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #999; font-size: 18px; }
-        /* 分类导航 */
-        .category-nav { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 25px; }
-        .category-btn { padding: 12px 20px; border: none; border-radius: 8px; background: #fff; color: #4a5568; cursor: pointer; transition: all 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.05); font-size: 16px; }
-        .category-btn.active { background: #4299e1; color: white; }
-        /* 内容网格 */
-        .content-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 30px; }
-        .content-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 3px 10px rgba(0,0,0,0.08); transition: transform 0.3s; cursor: pointer; }
-        .content-card:hover { transform: translateY(-3px); }
-        .content-cover { width: 100%; height: 280px; background: #f0f0f0; background-size: cover; background-position: center; }
-        .content-title { padding: 15px; text-align: center; font-weight: 600; font-size: 18px; }
-        /* 底部按钮 */
-        .footer-btns { display: flex; gap: 15px; justify-content: center; margin: 20px 0; }
-        .page-btn { padding: 12px 20px; border: none; border-radius: 8px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.05); cursor: pointer; font-size: 16px; }
+        /* 保留基础逻辑：封面展示、布局排版 */
+        .container {display: flex;flex-wrap: wrap;gap: 15px;padding: 20px;}
+        .item {width: 180px;text-align: center;}
+        .cover-img {width: 100%;height: 250px;object-fit: cover;border-radius: 8px;cursor: pointer;}
+        .intro {margin-top: 8px;color: #333;font-size: 14px;}
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- 公告栏 -->
-        <div class="notice">
-            提示：软件内容无需消耗次数；其他分类输入密码后获取5次解锁次数
-        </div>
+    <!-- 统一简介 -->
+    <div class="intro" style="text-align: center;font-weight: bold;">QQ群126026348</div>
 
-        <!-- 头部 -->
-        <div class="header">
-            <h1>次元资源</h1>
-            <div class="search-box">
-                <span class="search-icon">🔍</span>
-                <input type="text" class="search-input" placeholder="搜索资源...">
-            </div>
-        </div>
-
-        <!-- 分类导航 -->
-        <div class="category-nav">
-            <button class="category-btn active" data-category="all">全部资源</button>
-            <button class="category-btn" data-category="anime">动漫</button>
-            <button class="category-btn" data-category="game">游戏</button>
-            <button class="category-btn" data-category="comic">漫画</button>
-            <button class="category-btn" data-category="software">软件</button>
-        </div>
-
-        <!-- 内容网格 -->
-        <div class="content-grid" id="contentGrid">
-            <!-- 动漫帖子 -->
-            <div class="content-card" data-category="anime" 
-                 data-title="火影忍者 全季资源" 
-                 data-cover="https://picsum.photos/id/237/800/600" 
-                 data-desc="包含火影忍者正片1-720集、剧场版10部、OVA特别篇，1080P高清无水印。"
-                 data-link="https://example.com/naruto-resource">
-                <div class="content-cover" style="background-image: url('https://picsum.photos/id/237/800/600');"></div>
-                <div class="content-title">火影忍者 全季资源</div>
-            </div>
-
-            <!-- 软件帖子 -->
-            <div class="content-card" data-category="software" 
-                 data-title="动漫资源下载器" 
-                 data-cover="https://picsum.photos/id/180/800/600" 
-                 data-desc="支持多平台动漫/漫画资源批量下载，无广告、高速稳定。"
-                 data-link="https://example.com/anime-downloader">
-                <div class="content-cover" style="background-image: url('https://picsum.photos/id/180/800/600');"></div>
-                <div class="content-title">动漫资源下载器</div>
-            </div>
-        </div>
-
-             <!-- 软件帖子 -->
-            <div class="content-card" data-category="software" 
-                 data-title="雌修改催眠" 
-                 data-cover="https://xcimg.szwego.com/img/d3be270a/20251118/o_1jaareq8i1n8d11jh1par1qa1cv40.png" 
-                 data-desc="雌小鬼催眠 进展快 好玩"
-                 data-link="https://1ij.cn/fyava">
-                <div class="content-cover" style="background-image: url('https://picsum.photos/id/180/800/600');"></div>
-                <div class="content-title">动漫资源下载器</div>
-            </div>
-        </div>
-       
-  <!-- 底部按钮 -->
-        <div class="footer-btns">
-            <button class="page-btn">上一页</button>
-            <button class="page-btn">下一页</button>
-        </div>
+    <!-- 软件专区（20个空位，不消耗次数） -->
+    <h3>软件专区（不消耗次数）</h3>
+    <div class="container" id="software-container">
+        <div class="item"><img src="<!-- https://xcimg.szwego.com/img/d3be270a/20251118/o_1jaareq8i1n8d11jh1par1qa1cv40.png -->" alt="雌小鬼催眠" class="cover-img"><div class="intro"><a href="<!-- https://1ij.cn/fyava -->" target="_blank">点击进入</a></div></div>
+        <div class="item"><img src="<!-- 软件封面2 -->" alt="软件2" class="cover-img"><div class="intro"><a href="<!-- 软件跳转2 -->" target="_blank">点击进入</a></div></div>
+        <!-- 软件3-19 可复制上方结构补充 -->
+        <div class="item"><img src="<!-- 软件封面20 -->" alt="软件20" class="cover-img"><div class="intro"><a href="<!-- 软件跳转20 -->" target="_blank">点击进入</a></div></div>
     </div>
 
-    <!-- 密码验证弹窗 -->
-    <div class="verify-modal" id="verifyModal">
-        <div class="verify-box">
-            <h3>请输入解锁密码</h3>
-            <div class="verify-form-group">
-                <input type="text" class="verify-input" id="verifyCode" placeholder="输入密码">
-            </div>
-            <div class="verify-btn-group">
-                <button class="verify-btn" id="verifySubmit">输入密码</button>
-                <a href="https://qm.qq.com/q/pGZdDG9lio" target="_blank" class="group-btn">点我进群获取密码</a>
-            </div>
-            <p class="verify-error" id="verifyError">密码错误，请重试</p>
-            <p class="verify-count" id="verifyCount">当前设备剩余解锁次数：0</p>
-        </div>
+    <!-- 漫画专区（10个空位） -->
+    <h3>漫画专区</h3>
+    <div class="container" id="comic-container">
+        <div class="item"><img src="<!-- 漫画封面1 -->" alt="漫画1" class="cover-img"><div class="intro"><a href="<!-- 漫画跳转1 -->" target="_blank">点击进入</a></div></div>
+        <!-- 漫画2-9 可复制上方结构补充 -->
+        <div class="item"><img src="<!-- 漫画封面10 -->" alt="漫画10" class="cover-img"><div class="intro"><a href="<!-- 漫画跳转10 -->" target="_blank">点击进入</a></div></div>
     </div>
 
-    <!-- 帖子内容弹窗（按钮组对齐） -->
-    <div class="content-modal" id="contentModal">
-        <div class="content-box">
-            <h3 id="modalTitle"></h3>
-            <div class="content-cover-large" id="modalCover"></div>
-            <p class="content-desc" id="modalDesc"></p>
-            <!-- 按钮组容器（实现对齐） -->
-            <div class="content-btn-group">
-                <a href="" target="_blank" class="content-link-btn" id="modalLink">点击获取资源</a>
-                <button class="close-btn" id="closeModal">关闭</button>
-            </div>
-        </div>
+    <!-- 动漫专区（10个空位） -->
+    <h3>动漫专区</h3>
+    <div class="container" id="anime-container">
+        <div class="item"><img src="<!-- 动漫封面1 -->" alt="动漫1" class="cover-img"><div class="intro"><a href="<!-- 动漫跳转1 -->" target="_blank">点击进入</a></div></div>
+        <!-- 动漫2-9 可复制上方结构补充 -->
+        <div class="item"><img src="<!-- 动漫封面10 -->" alt="动漫10" class="cover-img"><div class="intro"><a href="<!-- 动漫跳转10 -->" target="_blank">点击进入</a></div></div>
+    </div>
+
+    <!-- 新增：游戏专区（10个空位） -->
+    <h3>游戏专区</h3>
+    <div class="container" id="game-container">
+        <div class="item"><img src="<!-- 游戏封面1 -->" alt="游戏1" class="cover-img"><div class="intro"><a href="<!-- 游戏跳转1 -->" target="_blank">点击进入</a></div></div>
+        <!-- 游戏2-9 可复制上方结构补充 -->
+        <div class="item"><img src="<!-- 游戏封面10 -->" alt="游戏10" class="cover-img"><div class="intro"><a href="<!-- 游戏跳转10 -->" target="_blank">点击进入</a></div></div>
+    </div>
+
+    <!-- 新增：其它专区（10个空位） -->
+    <h3>其它专区</h3>
+    <div class="container" id="other-container">
+        <div class="item"><img src="<!-- 其它封面1 -->" alt="其它1" class="cover-img"><div class="intro"><a href="<!-- 其它跳转1 -->" target="_blank">点击进入</a></div></div>
+        <!-- 其它2-9 可复制上方结构补充 -->
+        <div class="item"><img src="<!-- 其它封面10 -->" alt="其它10" class="cover-img"><div class="intro"><a href="<!-- 其它跳转10 -->" target="_blank">点击进入</a></div></div>
     </div>
 
     <script>
-        const VALID_CODES = ['2647670879', '126026348']; 
-        let unlockCount = localStorage.getItem('unlockCount') ? parseInt(localStorage.getItem('unlockCount')) : 0;
-        document.getElementById('verifyCount').textContent = `当前设备剩余解锁次数：${unlockCount}`;
-
-        let currentPost = null;
-
-        document.querySelectorAll('.content-card').forEach(card => {
-            card.addEventListener('click', function() {
-                currentPost = {
-                    title: this.dataset.title,
-                    cover: this.dataset.cover,
-                    desc: this.dataset.desc,
-                    category: this.dataset.category,
-                    link: this.dataset.link
-                };
-
-                if (currentPost.category === 'software') {
-                    showContentModal();
-                    return;
-                }
-
-                if (unlockCount > 0) {
-                    unlockCount--;
-                    localStorage.setItem('unlockCount', unlockCount);
-                    document.getElementById('verifyCount').textContent = `当前设备剩余解锁次数：${unlockCount}`;
-                    showContentModal();
-                } else {
-                    document.getElementById('verifyModal').style.display = 'flex';
-                }
-            });
-        });
-
-        document.getElementById('verifySubmit').addEventListener('click', function() {
-            const inputCode = document.getElementById('verifyCode').value.trim();
-            const errorEl = document.getElementById('verifyError');
-
-            if (VALID_CODES.includes(inputCode)) {
-                unlockCount = 5;
-                localStorage.setItem('unlockCount', unlockCount);
-                document.getElementById('verifyCount').textContent = `当前设备剩余解锁次数：${unlockCount}`;
-                
-                document.getElementById('verifyModal').style.display = 'none';
-                showContentModal();
-                document.getElementById('verifyCode').value = '';
-                errorEl.style.display = 'none';
-            } else {
-                errorEl.style.display = 'block';
-            }
-        });
-
-        function showContentModal() {
-            document.getElementById('contentModal').style.display = 'flex';
-            document.getElementById('modalTitle').textContent = currentPost.title;
-            document.getElementById('modalCover').style.backgroundImage = `url(${currentPost.cover})`;
-            document.getElementById('modalDesc').textContent = currentPost.desc;
-            document.getElementById('modalLink').href = currentPost.link;
-        }
-
-        document.getElementById('closeModal').addEventListener('click', function() {
-            document.getElementById('contentModal').style.display = 'none';
-        });
-
-        document.querySelectorAll('.category-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const category = this.dataset.category;
-                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                document.querySelectorAll('.content-card').forEach(card => {
-                    card.style.display = (category === 'all' || card.dataset.category === category) ? 'block' : 'none';
-                });
-            });
+        // 保留基础逻辑：封面加载失败时显示默认图（可选替换）
+        document.querySelectorAll('.cover-img').forEach(img => {
+            img.onerror = () => img.src = "默认封面链接（可选）";
         });
     </script>
 </body>
