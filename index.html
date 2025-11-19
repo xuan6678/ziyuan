@@ -2,70 +2,344 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>分类封面展示页</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>火影忍者同人【每日更新】</title>
     <style>
-        /* 保留基础逻辑：封面展示、布局排版 */
-        .container {display: flex;flex-wrap: wrap;gap: 15px;padding: 20px;}
-        .item {width: 180px;text-align: center;}
-        .cover-img {width: 100%;height: 250px;object-fit: cover;border-radius: 8px;cursor: pointer;}
-        .intro {margin-top: 8px;color: #333;font-size: 14px;}
+        body {
+            font-family: 'Helvetica', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+        /* 标题：火影主题红 */
+        h1 {
+            text-align: center;
+            color: #E63946;
+            margin-bottom: 20px;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        /* 分类导航：视频/插画/游戏 切换入口 */
+        .category-nav {
+            text-align: center;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .category-nav a {
+            padding: 10px 20px;
+            background-color: #E63946;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .category-nav a:hover {
+            background-color: #C1121F; /* 加深红 hover效果 */
+        }
+        /* 分类标题：每个内容区的标题 */
+        .category-title {
+            font-size: 22px;
+            color: #1D3557;
+            margin: 30px 0 15px;
+            border-left: 4px solid #E63946;
+            padding-left: 10px;
+        }
+        /* 内容列表：卡片式布局，适配手机 */
+        .content-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .item {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        /* -------------- 封面设置核心样式 -------------- */
+        /* 1. 视频封面：用poster属性设置（优先级最高，替代视频初始黑框） */
+        .video-cover {
+            width: 100%;
+            max-width: 100%;
+            height: 180px; /* 固定封面高度，统一排版 */
+            display: block;
+            object-fit: cover; /* 封面图片比例适配，不拉伸 */
+            cursor: pointer;
+        }
+        /* 2. 插画/游戏封面：直接用img标签的src设置 */
+        .img-cover {
+            width: 100%;
+            height: 180px; /* 和视频封面同高，视觉统一 */
+            object-fit: cover; /* 避免图片变形 */
+            display: block;
+        }
+        /* 内容卡片文字区 */
+        .intro {
+            padding: 15px;
+            text-align: center;
+        }
+        .intro a {
+            color: #E63946;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .intro a:hover {
+            text-decoration: underline;
+        }
+        /* 底部按钮：同步火影红色系 */
+        .footer-buttons {
+            text-align: center;
+            margin-top: 40px;
+        }
+        .footer-buttons a {
+            display: inline-block;
+            margin: 10px;
+            padding: 12px 24px;
+            background-color: #E63946;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .footer-buttons a:hover {
+            background-color: #C1121F;
+        }
+        /* 密码弹窗：样式保留，颜色适配 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            z-index: 1000;
+        }
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .close {
+            float: right;
+            font-size: 28px;
+            cursor: pointer;
+            color: #aaa;
+        }
+        .close:hover {
+            color: #E63946; /* 关闭按钮hover火影红 */
+        }
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin: 15px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .modal-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        button {
+            padding: 12px 20px;
+            background-color: #E63946;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #C1121F;
+        }
     </style>
 </head>
 <body>
-    <!-- 统一简介 -->
-    <div class="intro" style="text-align: center;font-weight: bold;">QQ群126026348</div>
 
-    <!-- 软件专区（20个空位，不消耗次数） -->
-    <h3>软件专区（不消耗次数）</h3>
-    <div class="container" id="software-container">
+<!-- 标题：替换为火影主题 + 每日更新 -->
+<h1>火影忍者同人【每日更新】</h1>
+
+<!-- 分类导航：视频/插画/游戏 三个分类入口 -->
+<div class="category-nav">
+    <a href="#video-category">视频同人</a>
+    <a href="#illustration-category">插画同人</a>
+    <a href="#game-category">游戏同人</a>
+</div>
+
+<!-- 1. 视频分类区（带解锁功能，封面用poster设置） -->
+<div id="video-category" class="category-section">
+    <h2 class="category-title">视频同人</h2>
+    <div class="content-list">
+        <!-- 视频1：封面设置在video标签的poster属性里 -->
         <div class="item">
-  <img src="https://xcimg.szwego.com/img/d3be270a/20251118/o_1jaareq8i1n8d11jh1par1qa1cv40.png" alt="雌小鬼催眠" class="cover-img">
-  <div class="intro">
-    <a href="https://1ij.cn/fyava" target="_blank">点击进入</a>
-  </div>
+            <video id="video1" class="video-cover locked" data-title="火影去衣491集" 
+                   poster="https://替换为火影视频1封面图地址.jpg"> <!-- 【视频封面设置处】：替换成你的封面图URL -->
+                <source src="https://gateway.pinata.cloud/ipfs/bafybeih6fx3z42vcp7jauwywa3o4qzjdfuozweptwjkoba4iivg5tibi7q" type="video/mp4">
+                您的浏览器不支持视频播放。
+            </video>
+            <div class="intro">
+                <a href="javascript:;" onclick="showVideoModal('video1')">点击解锁观看</a>
+            </div>
         </div>
-        <div class="item"><img src="<!-- 软件封面2 -->" alt="软件2" class="cover-img"><div class="intro"><a href="<!-- 软件跳转2 -->" target="_blank">点击进入</a></div></div>
-        <!-- 软件3-19 可复制上方结构补充 -->
-        <div class="item"><img src="<!-- 软件封面20 -->" alt="软件20" class="cover-img"><div class="intro"><a href="<!-- 软件跳转20 -->" target="_blank">点击进入</a></div></div>
+        <!-- 视频2：同理设置poster封面 -->
+        <div class="item">
+            <video id="video2" class="video-cover locked" data-title="火影同人-晓组织秘闻" 
+                   poster="https://https://xcimg.szwego.com/img/d3be270a/20251119/o_1jaea495qbab2a41cq9rkg1s420.jpeg"> <!-- 【视频封面设置处】 -->
+                <source src="https://gateway.pinata.cloud/ipfs/bafybeihjlva56nrbs5wjtd4q7ev2bdozwkxgnjlateiyhoc4rbafne2ikq" type="video/mp4">
+                您的浏览器不支持视频播放。
+            </video>
+            <div class="intro">
+                <a href="javascript:;" onclick="showVideoModal('video2')">点击解锁观看</a>
+            </div>
+        </div>
+        <!-- 可复制item添加更多视频，注意修改id、poster、data-title -->
     </div>
+</div>
 
-    <!-- 漫画专区（10个空位） -->
-    <h3>漫画专区</h3>
-    <div class="container" id="comic-container">
-        <div class="item"><img src="<!-- 漫画封面1 -->" alt="漫画1" class="cover-img"><div class="intro"><a href="<!-- 漫画跳转1 -->" target="_blank">点击进入</a></div></div>
-        <!-- 漫画2-9 可复制上方结构补充 -->
-        <div class="item"><img src="<!-- 漫画封面10 -->" alt="漫画10" class="cover-img"><div class="intro"><a href="<!-- 漫画跳转10 -->" target="_blank">点击进入</a></div></div>
+<!-- 2. 插画分类区（封面用img标签的src设置） -->
+<div id="illustration-category" class="category-section">
+    <h2 class="category-title">插画同人</h2>
+    <div class="content-list">
+        <!-- 插画1：封面设置在img标签的src属性里 -->
+        <div class="item">
+            <img src="https://替换为火影插画1封面图地址.jpg" alt="火影插画-纲手" class="img-cover"> <!-- 【插画封面设置处】 -->
+            <div class="intro">
+                <a href="https://替换为插画1查看链接" target="_blank">点击查看高清插画</a>
+            </div>
+        </div>
+        <!-- 插画2：同理设置src封面 -->
+        <div class="item">
+            <img src="https://替换为火影插画2封面图地址.jpg" alt="火影插画-卡卡西" class="img-cover"> <!-- 【插画封面设置处】 -->
+            <div class="intro">
+                <a href="https://替换为插画2查看链接" target="_blank">点击查看高清插画</a>
+            </div>
+        </div>
     </div>
+</div>
 
-    <!-- 动漫专区（10个空位） -->
-    <h3>动漫专区</h3>
-    <div class="container" id="anime-container">
-        <div class="item"><img src="<!-- 动漫封面1 -->" alt="动漫1" class="cover-img"><div class="intro"><a href="<!-- 动漫跳转1 -->" target="_blank">点击进入</a></div></div>
-        <!-- 动漫2-9 可复制上方结构补充 -->
-        <div class="item"><img src="<!-- 动漫封面10 -->" alt="动漫10" class="cover-img"><div class="intro"><a href="<!-- 动漫跳转10 -->" target="_blank">点击进入</a></div></div>
+<!-- 3. 游戏分类区（封面用img标签的src设置） -->
+<div id="game-category" class="category-section">
+    <h2 class="category-title">游戏同人</h2>
+    <div class="content-list">
+        <!-- 游戏1：封面设置在img标签的src属性里 -->
+        <div class="item">
+            <img src="https://替换为火影游戏1封面图地址.jpg" alt="火影游戏-忍者新世代" class="img-cover"> <!-- 【游戏封面设置处】 -->
+            <div class="intro">
+                <a href="https://替换为游戏1下载/介绍链接" target="_blank">点击获取游戏资源</a>
+            </div>
+        </div>
+        <!-- 游戏2：同理设置src封面 -->
+        <div class="item">
+            <img src="https://替换为火影游戏2封面图地址.jpg" alt="火影游戏-究极忍者风暴" class="img-cover"> <!-- 【游戏封面设置处】 -->
+            <div class="intro">
+                <a href="https://替换为游戏2下载/介绍链接" target="_blank">点击获取游戏资源</a>
+            </div>
+        </div>
     </div>
+</div>
 
-    <!-- 新增：游戏专区（10个空位） -->
-    <h3>游戏专区</h3>
-    <div class="container" id="game-container">
-        <div class="item"><img src="<!-- 游戏封面1 -->" alt="游戏1" class="cover-img"><div class="intro"><a href="<!-- 游戏跳转1 -->" target="_blank">点击进入</a></div></div>
-        <!-- 游戏2-9 可复制上方结构补充 -->
-        <div class="item"><img src="<!-- 游戏封面10 -->" alt="游戏10" class="cover-img"><div class="intro"><a href="<!-- 游戏跳转10 -->" target="_blank">点击进入</a></div></div>
+<!-- 底部按钮：保留原功能，文字适配火影 -->
+<div class="footer-buttons">
+    <a href="https://any66.lanzoub.com/b04qregtc" target="_blank">点击获取火影同人素材</a>
+    <a href="http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=jG6Xevd7U1V9qzZi-fYW7658Kpl699Ir&authKey=hMwndjVfO1ZcQ%2BiRWX1sQbC0XeQ%2B%2BSr3uWwwRepCS6B2o24HAPetuVTuciT%2F8gZs&noverify=0&group_code=780243469" target="_blank">火影同人交流群</a>
+</div>
+
+<!-- 密码输入弹窗：保留原功能 -->
+<div id="passwordModal" class="modal">
+    <div class="modal-content">
+        <span class="close">×</span>
+        <p id="modalMessage">请输入密码以解锁视频</p>
+        <input type="password" id="passwordInput" placeholder="请输入密码">
+        <div class="modal-buttons">
+            <button id="submitPassword">输入密码</button>
+            <button id="getPasswordBtn">进火影群获取密码</button>
+        </div>
     </div>
+</div>
 
-    <!-- 新增：其它专区（10个空位） -->
-    <h3>其它专区</h3>
-    <div class="container" id="other-container">
-        <div class="item"><img src="<!-- 其它封面1 -->" alt="其它1" class="cover-img"><div class="intro"><a href="<!-- 其它跳转1 -->" target="_blank">点击进入</a></div></div>
-        <!-- 其它2-9 可复制上方结构补充 -->
-        <div class="item"><img src="<!-- 其它封面10 -->" alt="其它10" class="cover-img"><div class="intro"><a href="<!-- 其它跳转10 -->" target="_blank">点击进入</a></div></div>
-    </div>
+<script>
+    // 视频状态管理（统一密码，可修改）
+    var videos = {
+        'video1': { element: document.getElementById('video1'), unlocked: false, password: 'ying9' },
+        'video2': { element: document.getElementById('video2'), unlocked: false, password: 'ying9' }
+        // 新增视频需在这里添加对应的key和配置
+    };
 
-    <script>
-        // 保留基础逻辑：封面加载失败时显示默认图（可选替换）
-        document.querySelectorAll('.cover-img').forEach(img => {
-            img.onerror = () => img.src = "默认封面链接（可选）";
+    // 初始化：禁用视频控件
+    for (var key in videos) {
+        videos[key].element.controls = false;
+    }
+
+    // 弹窗元素
+    var passwordModal = document.getElementById("passwordModal");
+    var modalMessage = document.getElementById("modalMessage");
+    var passwordInput = document.getElementById("passwordInput");
+    var submitPassword = document.getElementById("submitPassword");
+    var getPasswordBtn = document.getElementById("getPasswordBtn");
+    var closeSpan = document.querySelector(".close");
+    var currentVideo = null;
+
+    // 显示视频解锁弹窗（供a标签调用）
+    function showVideoModal(videoKey) {
+        if (!videos[videoKey].unlocked) {
+            currentVideo = videoKey;
+            modalMessage.textContent = `请输入密码解锁《${videos[videoKey].element.getAttribute('data-title')}》`;
+            passwordModal.style.display = 'block';
+        }
+    }
+
+    // 视频点击触发弹窗（备用）
+    for (var key in videos) {
+        videos[key].element.addEventListener('click', function() {
+            var videoKey = this.id;
+            showVideoModal(videoKey);
         });
-    </script>
+    }
+
+    // 密码验证
+    submitPassword.onclick = function() {
+        if (currentVideo && passwordInput.value === videos[currentVideo].password) {
+            videos[currentVideo].element.controls = true;
+            videos[currentVideo].unlocked = true;
+            passwordModal.style.display = 'none';
+            passwordInput.value = '';
+        } else {
+            alert('密码错误，进火影群获取正确密码！');
+        }
+    };
+
+    // 进群获取密码跳转
+    getPasswordBtn.onclick = function() {
+        window.location.href = 'http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=jG6Xevd7U1V9qzZi-fYW7658Kpl699Ir&authKey=hMwndjVfO1ZcQ%2BiRWX1sQbC0XeQ%2B%2BSr3uWwwRepCS6B2o24HAPetuVTuciT%2F8gZs&noverify=0&group_code=780243469';
+    };
+
+    // 关闭弹窗
+    closeSpan.onclick = function() {
+        passwordModal.style.display = 'none';
+        passwordInput.value = '';
+    };
+    window.onclick = function(event) {
+        if (event.target === passwordModal) {
+            passwordModal.style.display = 'none';
+            passwordInput.value = '';
+        }
+    };
+</script>
+
 </body>
 </html>
