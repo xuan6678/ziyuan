@@ -176,52 +176,6 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
-            transition: background-c            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.6);
-            z-index: 1000;
-        }
-        .modal-content {
-            background-color: white;
-            margin: 15% auto;
-            padding: 30px;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
-        .close {
-            float: right;
-            font-size: 28px;
-            cursor: pointer;
-            color: #aaa;
-        }
-        .close:hover {
-            color: #E63946; /* 关闭按钮hover火影红 */
-        }
-        input[type="password"] {
-            width: 100%;
-            padding: 12px;
-            margin: 15px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        .modal-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        button {
-            padding: 12px 20px;
-            background-color: #E63946;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
             transition: background-color 0.3s;
         }
         button:hover {
@@ -231,7 +185,7 @@
 </head>
 <body>
 
-<!-- 标题：替换为火影主题 + 每日更新 -->
+<!-- 标题：替换为火影主题 + 每日更新（按要求保留主标题） -->
 <h1>火影忍者同人【每日更新】</h1>
 
 <!-- 分类导航：视频/插画/游戏 三个分类入口 -->
@@ -241,165 +195,185 @@
     <a href="#game-category">游戏同人</a>
 </div>
 
-<!-- 1. 视频分类区（已完整替换视频1、视频2的封面、标题，跳转/视频源链接不变） -->
+<!-- 1. 视频分类区（4个视频，原有+新增） -->
 <div id="video-category" class="category-section">
     <h2 class="category-title">视频同人</h2>
     <div class="content-list">
-        <!-- 视频1：保留原封面+标题，仅确保地址正确 -->
+        <!-- 视频1：原有 -->
         <div class="item">
-            <video id="video1" class="video-cover locked" data-title="火影去衣491集" 
-                   poster="https://xcimg.szwego.com/img/d3be270a/20251119/o_1jaea495qbab2a41cq9rkg1s420.jpeg">
+            <video id="video1" class="video-cover locked" data-type="video" data-title="火影同人-火影第512集" data-src="https://gateway.pinata.cloud/ipfs/bafybeih6fx3z42vcp7jauwywa3o4qzjdfuozweptwjkoba4iivg5tibi7q"
+                   poster="https://xcimg.szwego.com/img/173374c5/20251122/o_1jalr7s0pt7o15jo3lcmpt10cn0.jpeg">
                 <source src="https://gateway.pinata.cloud/ipfs/bafybeih6fx3z42vcp7jauwywa3o4qzjdfuozweptwjkoba4iivg5tibi7q" type="video/mp4">
                 您的浏览器不支持视频播放。
             </video>
             <div class="intro">
-                <a href="javascript:;" onclick="showVideoModal('video1')">点击解锁观看</a>
+                <a href="javascript:;" onclick="showLockModal('video1')">点击解锁观看</a>
             </div>
         </div>
-        <!-- 视频2：已替换封面链接为指定地址，标题改为“火影531集”，跳转/视频源不变 -->
+        <!-- 视频2：原有 -->
         <div class="item">
-            <video id="video2" class="video-cover locked" data-title="火影531集" 
-                   poster="https://xcimg.szwego.com/img/d3be270a/20251119/o_1jaeaml1q1lk011ee105e5g74es1.jpeg">
-                <source src="https://gateway.pinata.cloud/ipfs/0196eeea-0178-7b6a-bcd7-51a748a978eb😡" type="video/mp4">
+            <video id="video2" class="video-cover locked" data-type="video" data-title="火影同人-小李在澡堂做的事" data-src="https://gateway.pinata.cloud/ipfs/bafybeihjlva56nrbs5wjtd4q7ev2bdozwkxgnjlateiyhoc4rbafne2ikq"
+                   poster="https://xcimg.szwego.com/img/173374c5/20251122/o_1jalridjso7p15turb1jglvaa1.jpeg">
+                <source src="https://gateway.pinata.cloud/ipfs/bafybeihjlva56nrbs5wjtd4q7ev2bdozwkxgnjlateiyhoc4rbafne2ikq" type="video/mp4">
                 您的浏览器不支持视频播放。
             </video>
             <div class="intro">
-                <a href="javascript:;" onclick="showVideoModal('video2')">点击解锁观看</a>
+                <a href="javascript:;" onclick="showLockModal('video2')">点击解锁观看</a>
             </div>
         </div>
-        <!-- 可复制item添加更多视频，注意修改id、poster、data-title -->
+        <!-- 视频3：新增 -->
+        <div class="item">
+            <video id="video3" class="video-cover locked" data-type="video" data-title="火影同人-乖巧的照美冥" data-src="https://gateway.pinata.cloud/ipfs/bafybeih6fx3z42vcp7jauwywa3o4qzjdfuozweptwjkoba4iivg5tibi7q"
+                   poster="https://xcimg.szwego.com/img/173374c5/20251122/o_1jalv7rog19jkn06vd2ca1fib9.jpeg">
+                <source src="https://gateway.pinata.cloud/ipfs/bafybeih6fx3z42vcp7jauwywa3o4qzjdfuozweptwjkoba4iivg5tibi7q" type="video/mp4">
+                您的浏览器不支持视频播放。
+            </video>
+            <div class="intro">
+                <a href="javascript:;" onclick="showLockModal('video3')">点击解锁观看</a>
+            </div>
+        </div>
+        <!-- 视频4：新增 -->
+        <div class="item">
+            <video id="video4" class="video-cover locked" data-type="video" data-title="火影同人-上门辅导的卡卡西" data-src="https://gateway.pinata.cloud/ipfs/bafybeihjlva56nrbs5wjtd4q7ev2bdozwkxgnjlateiyhoc4rbafne2ikq"
+                   poster="https://xcimg.szwego.com/img/173374c5/20251122/o_1jalv7ro78h51qc377rohkqse8.jpeg">
+                <source src="https://gateway.pinata.cloud/ipfs/bafybeihjlva56nrbs5wjtd4q7ev2bdozwkxgnjlateiyhoc4rbafne2ikq" type="video/mp4">
+                您的浏览器不支持视频播放。
+            </video>
+            <div class="intro">
+                <a href="javascript:;" onclick="showLockModal('video4')">点击解锁观看</a>
+            </div>
+        </div>
     </div>
 </div>
 
-<!-- 2. 插画分类区（封面用img标签的src设置） -->
+<!-- 2. 插画分类区（4个插画，标题已修改） -->
 <div id="illustration-category" class="category-section">
     <h2 class="category-title">插画同人</h2>
     <div class="content-list">
-        <!-- 插画1：封面设置在img标签的src属性里 -->
+        <!-- 插画1：原有 -->
         <div class="item">
-            <img src="https://替换为火影插画1封面图地址.jpg" alt="火影插画-纲手" class="img-cover"> <!-- 【插画封面设置处】 -->
+            <img id="illust1" class="img-cover locked" data-type="illust" data-title="火影插画-天天执行任务被抓住 122P" data-src="https://xcimg.szwego.com/img/173374c5/20251122/o_1jals88pdhr84q214j611211vtl7.jpeg"
+                 src="https://xcimg.szwego.com/img/173374c5/20251122/o_1jals88nuur1g3bcul133qf055.jpeg" alt="火影插画-天天执行任务被抓住 122P">
             <div class="intro">
-                <a href="https://替换为插画1查看链接" target="_blank">点击查看高清插画</a>
+                <a href="javascript:;" onclick="showLockModal('illust1')">点击查看高清插画</a>
             </div>
         </div>
-        <!-- 插画2：同理设置src封面 -->
+        <!-- 插画2：原有 -->
         <div class="item">
-            <img src="https://替换为火影插画2封面图地址.jpg" alt="火影插画-卡卡西" class="img-cover"> <!-- 【插画封面设置处】 -->
+            <img id="illust2" class="img-cover locked" data-type="illust" data-title="火影插画-红豆被抓起来 159P" data-src="https://xcimg.szwego.com/img/173374c5/20251122/o_1jals88pdhr84q214j611211vtl7.jpeg"
+                 src="https://xcimg.szwego.com/img/173374c5/20251122/o_1jals88o94uagcm5akgco16cj6.jpeg" alt="火影插画-红豆被抓起来 159P">
             <div class="intro">
-                <a href="https://替换为插画2查看链接" target="_blank">点击查看高清插画</a>
+                <a href="javascript:;" onclick="showLockModal('illust2')">点击查看高清插画</a>
+            </div>
+        </div>
+        <!-- 插画3：标题修改为「火影插画-火影忍者手游A忍108P」 -->
+        <div class="item">
+            <img id="illust3" class="img-cover locked" data-type="illust" data-title="火影插画-火影忍者手游A忍108P" data-src="https://xcimg.szwego.com/img/173374c5/20251122/o_1jals88pdhr84q214j611211vtl7.jpeg"
+                 src="https://xcimg.szwego.com/img/173374c5/20251122/o_1jalvnd3nqqv1n85cn17f217n9b.jpeg" alt="火影插画-火影忍者手游A忍108P">
+            <div class="intro">
+                <a href="javascript:;" onclick="showLockModal('illust3')">点击查看高清插画</a>
+            </div>
+        </div>
+        <!-- 插画4：标题修改为「火影插画-火影忍者手游c忍 63P」 -->
+        <div class="item">
+            <img id="illust4" class="img-cover locked" data-type="illust" data-title="火影插画-火影忍者手游c忍 63P" data-src="https://xcimg.szwego.com/img/173374c5/20251122/o_1jals88pdhr84q214j611211vtl7.jpeg"
+                 src="https://xcimg.szwego.com/img/173374c5/20251122/o_1jalvnd2q9fv1maieva1fmeqnja.jpeg" alt="火影插画-火影忍者手游c忍 63P">
+            <div class="intro">
+                <a href="javascript:;" onclick="showLockModal('illust4')">点击查看高清插画</a>
             </div>
         </div>
     </div>
 </div>
 
-<!-- 3. 游戏分类区（封面用img标签的src设置） -->
+<!-- 3. 游戏分类区（点击后弹出密码弹窗） -->
 <div id="game-category" class="category-section">
     <h2 class="category-title">游戏同人</h2>
     <div class="content-list">
-        <!-- 游戏1：封面设置在img标签的src属性里 -->
         <div class="item">
-            <img src="https://替换为火影游戏1封面图地址.jpg" alt="火影游戏-忍者新世代" class="img-cover"> <!-- 【游戏封面设置处】 -->
+            <img id="game1" class="img-cover locked" data-type="game" data-title="火影同人游戏-忍术对决" data-src="https://xcimg.szwego.com/img/173374c5/20251122/o_1jals88pdhr84q214j611211vtl7.jpeg"
+                 src="https://xcimg.szwego.com/img/173374c5/20251122/o_1jals88pdhr84q214j611211vtl7.jpeg" alt="火影同人游戏-忍术对决">
             <div class="intro">
-                <a href="https://替换为游戏1下载/介绍链接" target="_blank">点击获取游戏资源</a>
-            </div>
-        </div>
-        <!-- 游戏2：同理设置src封面 -->
-        <div class="item">
-            <img src="https://替换为火影游戏2封面图地址.jpg" alt="火影游戏-究极忍者风暴" class="img-cover"> <!-- 【游戏封面设置处】 -->
-            <div class="intro">
-                <a href="https://替换为游戏2下载/介绍链接" target="_blank">点击获取游戏资源</a>
+                <a href="javascript:;" onclick="showLockModal('game1')">点击体验同人游戏</a>
             </div>
         </div>
     </div>
 </div>
 
-<!-- 底部按钮：保留原功能，文字适配火影 -->
-<div class="footer-buttons">
-    <a href="https://any66.lanzoub.com/b04qregtc" target="_blank">点击获取火影同人素材</a>
-    <a href="http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=jG6Xevd7U1V9qzZi-fYW7658Kpl699Ir&authKey=hMwndjVfO1ZcQ%2BiRWX1sQbC0XeQ%2B%2BSr3uWwwRepCS6B2o24HAPetuVTuciT%2F8gZs&noverify=0&group_code=780243469" target="_blank">火影同人交流群</a>
-</div>
-
-<!-- 密码输入弹窗：保留原功能 -->
-<div id="passwordModal" class="modal">
+<!-- 统一解锁密码弹窗（适配视频/插画/游戏） -->
+<div id="lockModal" class="modal">
     <div class="modal-content">
-        <span class="close">×</span>
-        <p id="modalMessage">请输入密码以解锁视频</p>
-        <input type="password" id="passwordInput" placeholder="请输入密码">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h3 id="modalTitle">解锁内容</h3>
+        <p>请输入解锁密码</p>
+        <input type="password" id="lockPassword" placeholder="输入密码">
+        <!-- 进群获取密码链接 -->
+        <div class="group-link">
+            <a href="https://qm.qq.com/q/wYCbfHBttu" target="_blank">点我进群获取密码</a>
+        </div>
         <div class="modal-buttons">
-            <button id="submitPassword">输入密码</button>
-            <button id="getPasswordBtn">进火影群获取密码</button>
+            <button onclick="unlockContent()">解锁</button>
+            <button onclick="closeModal()" style="background-color: #6c757d;">取消</button>
         </div>
     </div>
 </div>
 
+<!-- 脚本部分（统一处理视频/插画/游戏的解锁逻辑） -->
 <script>
-    // 视频状态管理（统一密码，可修改）
-    var videos = {
-        'video1': { element: document.getElementById('video1'), unlocked: false, password: 'ying9' },
-        'video2': { element: document.getElementById('video2'), unlocked: false, password: 'ying9' }
-        // 新增视频需在这里添加对应的key和配置
-    };
+    let currentContentId = "";
+    const lockModal = document.getElementById("lockModal");
+    const modalTitle = document.getElementById("modalTitle");
+    const correctPassword = "naruto123"; // 可自行修改解锁密码
 
-    // 初始化：禁用视频控件
-    for (var key in videos) {
-        videos[key].element.controls = false;
+    // 显示统一解锁弹窗
+    function showLockModal(contentId) {
+        currentContentId = contentId;
+        const contentTitle = document.getElementById(contentId).getAttribute("data-title");
+        modalTitle.textContent = `解锁 ${contentTitle}`;
+        lockModal.style.display = "block";
     }
-
-    // 弹窗元素
-    var passwordModal = document.getElementById("passwordModal");
-    var modalMessage = document.getElementById("modalMessage");
-    var passwordInput = document.getElementById("passwordInput");
-    var submitPassword = document.getElementById("submitPassword");
-    var getPasswordBtn = document.getElementById("getPasswordBtn");
-    var closeSpan = document.querySelector(".close");
-    var currentVideo = null;
-
-    // 显示视频解锁弹窗（供a标签调用）
-    function showVideoModal(videoKey) {
-        if (!videos[videoKey].unlocked) {
-            currentVideo = videoKey;
-            modalMessage.textContent = `请输入密码解锁《${videos[videoKey].element.getAttribute('data-title')}》`;
-            passwordModal.style.display = 'block';
-        }
-    }
-
-    // 视频点击触发弹窗（备用）
-    for (var key in videos) {
-        videos[key].element.addEventListener('click', function() {
-            var videoKey = this.id;
-            showVideoModal(videoKey);
-        });
-    }
-
-    // 密码验证
-    submitPassword.onclick = function() {
-        if (currentVideo && passwordInput.value === videos[currentVideo].password) {
-            videos[currentVideo].element.controls = true;
-            videos[currentVideo].unlocked = true;
-            passwordModal.style.display = 'none';
-            passwordInput.value = '';
-        } else {
-            alert('密码错误，进火影群获取正确密码！');
-        }
-    };
-
-    // 进群获取密码跳转
-    getPasswordBtn.onclick = function() {
-        window.location.href = 'http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=jG6Xevd7U1V9qzZi-fYW7658Kpl699Ir&authKey=hMwndjVfO1ZcQ%2BiRWX1sQbC0XeQ%2B%2BSr3uWwwRepCS6B2o24HAPetuVTuciT%2F8gZs&noverify=0&group_code=780243469';
-    };
 
     // 关闭弹窗
-    closeSpan.onclick = function() {
-        passwordModal.style.display = 'none';
-        passwordInput.value = '';
-    };
-    window.onclick = function(event) {
-        if (event.target === passwordModal) {
-            passwordModal.style.display = 'none';
-            passwordInput.value = '';
+    function closeModal() {
+        lockModal.style.display = "none";
+        document.getElementById("lockPassword").value = "";
+    }
+
+    // 统一解锁逻辑（区分视频/插画/游戏）
+    function unlockContent() {
+        const inputPassword = document.getElementById("lockPassword").value;
+        if (inputPassword === correctPassword) {
+            const contentElement = document.getElementById(currentContentId);
+            const contentType = contentElement.getAttribute("data-type");
+            const contentSrc = contentElement.getAttribute("data-src");
+
+            // 移除锁定状态
+            contentElement.classList.remove("locked");
+
+            // 按类型处理：视频播放，插画/游戏跳转链接
+            if (contentType === "video") {
+                contentElement.play();
+            } else {
+                window.open(contentSrc, "_blank"); // 新窗口打开插画/游戏链接
+            }
+
+            closeModal();
+        } else {
+            alert("密码错误！请重新输入");
         }
-    };
+    }
+
+    // 点击弹窗外部关闭
+    window.onclick = function(event) {
+        if (event.target === lockModal) {
+            closeModal();
+        }
+    }
 </script>
+
+<!-- 底部按钮（已去除返回顶部，修改为学习资料链接） -->
+<div class="footer-buttons">
+    <a href="https://any66.lanzoub.com/s/beibei9" target="_blank">学习资料</a>
+</div>
 
 </body>
 </html>
